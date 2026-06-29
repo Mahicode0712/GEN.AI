@@ -100,5 +100,8 @@
 # print(a[-1:-24:-1])
 
 
-#dictionary
-#
+queue = []
+queue.append(20)
+queue.append(30)
+queue.append(40)
+
