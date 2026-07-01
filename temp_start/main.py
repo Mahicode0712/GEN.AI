@@ -34,3 +34,7 @@ def delete_item(item_id: int, db = Depends(get_db)):
     item = crud.delete_item(db=db, item_id=item_id)
     if not item: raise HTTPException(404, "Not found")
     return item
+
+@app.post("/items/seed", response_model=list[schemas.ItemResponse])
+def seed_database(db: Session = Depends(get_db)):
+    return crud.seed_db(db=db)
