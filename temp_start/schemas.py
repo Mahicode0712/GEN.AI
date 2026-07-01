@@ -8,7 +8,7 @@ class ItemBase(BaseModel):
 class ItemCreate(ItemBase): pass
 
 # PUT body --  every field
-class ItemUpadate(BaseModel):
+class ItemUpdate(BaseModel):
     name: Optional[str] = None
     price: Optional[int] = None
     is_active: Optional[bool] = None

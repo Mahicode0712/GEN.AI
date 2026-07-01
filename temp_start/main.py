@@ -16,6 +16,27 @@ def create_item(item: schemas.ItemCreate,
 def read_items(skip=0, limit=100, db = Depends(get_db)):
     return crud.get_items(db=db, skip=skip, limit=limit)
 
+@app.get("/items/filter")
+def filter_items(min_price: int = None, max_price: int = None,db = Depends(get_db)):
+    items = crud.get_item_by_price(db=db, min_price=min_price, max_price=max_price)
+    if not items: raise HTTPException(404, "No items found")
+    return items
+
+@app.get("/items/search")
+def search_items(keyword: str = None,min_price: int = None,max_price: int = None,skip: int = 0,limit: int = 100,db: Session = Depends(get_db)):
+    results = crud.search_items(db=db,keyword=keyword,min_price=min_price,max_price=max_price,skip=skip,limit=limit)
+    if not results:raise HTTPException(404, "No items found")
+    
+    return {
+        "total": len(results),
+        "filters": {
+            "keyword": keyword,
+            "min_price": min_price,
+            "max_price": max_price
+        },
+        "items": results
+    }
+
 @app.get("/items/{item_id}", response_model=schemas.ItemResponse)
 def read_item(item_id: int, db = Depends(get_db)):
     item = crud.get_item(db=db, item_id=item_id)

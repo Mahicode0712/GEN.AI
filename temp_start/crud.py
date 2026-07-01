@@ -1,6 +1,9 @@
-from abc import update_abstractmethods
 from sqlalchemy.orm import Session
 import models, schemas
+import chromadb
+
+chroma_client = chromadb.Client()
+collection = chroma_client.get_or_create_collection(name="products")
 
 
 def create_item(db: Session, item:schemas.ItemCreate):
@@ -99,3 +102,20 @@ def seed_db(db: Session):
         seeded_items.append(db_item)
         
     return seeded_items
+
+
+def get_item_by_price(db, min_price, max_price = None, skip=0, limit=100):
+    return db.query(models.Item).filter(
+        models.Item.price >= min_price,
+        models.Item.price <= max_price
+    ).offset(skip).limit(limit).all()
+
+def search_items(db, keyword=None, min_price=None, max_price=None, skip=0, limit=100):
+    query = db.query(models.Item)
+    if keyword:
+        query = query.filter(models.Item.name.ilike(f"%{keyword}%"))
+    if min_price:
+        query = query.filter(models.Item.price >= min_price)
+    if max_price:
+        query = query.filter(models.Item.price <= max_price)
+    return query.offset(skip).limit(limit).all()
