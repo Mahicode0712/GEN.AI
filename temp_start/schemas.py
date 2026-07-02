@@ -18,3 +18,10 @@ class ItemResponse(ItemBase):
     id:int
     class Config:
         from_atrribute = True    #pydantic  v2 
+
+#RAG recommendation response
+class RAGRecommendationResponse(BaseModel):
+    query: str
+    retrieved_items: list[ItemResponse]
+    prompt_sent: str
+    recommendation: str
