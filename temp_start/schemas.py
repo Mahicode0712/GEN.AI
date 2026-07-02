@@ -1,13 +1,16 @@
+# Pydantic schemas — 3 distinct shapes for 3 purposes
 from pydantic import BaseModel
 from typing import Optional
 
+# Shared fields (base class)
 class ItemBase(BaseModel):
     name:str; description: Optional[str] = None
     price:int; is_active: bool = True
 
+# POST body — no id yet (DB assigns it)
 class ItemCreate(ItemBase): pass
 
-# PUT body --  every field
+# PUT body --  every field is optional for partial updates
 class ItemUpdate(BaseModel):
     name: Optional[str] = None
     price: Optional[int] = None
